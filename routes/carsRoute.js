@@ -1,27 +1,137 @@
-const express = require('express');
-const app = express()
-const router = express.Router()
+const bodyParser = require("body-parser");
+const con = require("../config/dbcon");
+const express = require("express");
+const app = express();
+const router = express.Router();
 
 // get all cars
 router.get("/", (req, res) => {
-    try {
-        const strQry =`SELECT * FROM users`;
+  try {
+    const strQry = `SELECT * FROM cars`;
 
-        con.query(strQry, (err, results) => {
-            if (err) throw err;
+    con.query(strQry, (err, results) => {
+      if (err) throw err;
 
-            res.json({
-                results : results,
-                msg : "All products shown"
-            })
-        })
+      res.json({
+        results: results,
+        msg: "All products shown",
+      });
+    });
+  } catch (error) {
+    res.status(400).json({
+      error,
+    });
+  }
+});
 
-    } catch (error) {
-        res.status(400).json({
-            error
-        })
+router.get("/:id", (req, res) => {
+  try {
+    const strQry = `SELECT * FROM cars WHERE id = ${req.params.id}`;
+
+    con.query(strQry, (err, results) => {
+      if (err) throw err;
+      res.json({
+        results: results,
+        msg: "one car shown",
+      });
+    });
+  } catch (error) {
+    res.status(400).json({
+      error,
+    });
+  }
+});
+
+// add product
+router.post("/", bodyParser.json(), (req, res) => {
+  try {
+    const car = req.body;
+    const strQry = `INSERT INTO cars (vin, manufacturer, bodystyle, model, modelyear, MSRP, fueltype, transmission, img) VALUES (?,?,?,?,?,?,?,?,?)`;
+
+    con.query(
+      strQry,
+      [
+        car.vin,
+        car.manufacturer,
+        car.bodystyle,
+        car.model,
+        car.modelyear,
+        car.MSRP,
+        car.fueltype,
+        car.transmission,
+        car.img,
+      ],
+      (err, results) => {
+        if (err) throw err;
+        res.status(200).json({
+          msg: "Product Added",
+        });
+      }
+    );
+  } catch (error) {
+    res.status(200).json({
+      error,
+    });
+  }
+});
+
+router.put("/:id", bodyParser.json(), (req, res) => {
+  try {
+    const strQry = `UPDATE cars SET ? WHERE id = ${req.params.id}`;
+    const {
+      vin,
+      manufacturer,
+      bodystyle,
+      model,
+      modelyear,
+      MSRP,
+      fueltype,
+      transmission,
+      img,
+    } = req.body;
+
+    const car = {
+      //   vin,
+      // manufacturer,
+      // bodystyle,
+      // model,
+      // modelyear,
+      // MSRP,
+      // fueltype,
+      // transmission,
+      img,
     }
+
+    con.query(strQry, car,(err, results) => {
+        if (err) throw err;
+        res.status(200).json({
+            results,
+            msg : "Updated item Successfully"
+        })
+    });
+  } catch (error) {
+    res.status(400).json({
+      error,
+    });
+  }
+});
+
+// DELETE
+router.delete("/:id", (req, res) => {
+try {
+    const strQry =`DELETE FROM cars WHERE id = ${req.params.id}`
+
+    con.query(strQry, (err, results) => {
+      if (err) throw err;
+      res.status(200).json({
+        results,
+        msg : "Item Deleted"
+      })
+    })
+} catch (error) {
+    res.status(400).json({
+        error,
+      });
+}
 })
-
-module.exports = router
-
+module.exports = router;
