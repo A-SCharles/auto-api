@@ -9,7 +9,7 @@ app.set("port", port || 4000);
 app.use(express.json(), cors(), express.static("public"));
 
 app.listen(port, ()=> {
-    console.log(`Server is running on ${port}`);
+    console.log(`Server is running on http://localhost:${port}`);
 })
 
 app.get("/", (req, res) => {
