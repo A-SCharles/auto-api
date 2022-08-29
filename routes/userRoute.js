@@ -4,7 +4,7 @@ const router = express.Router();
 const bodyparser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const { hash, compare } = require("bcrypt");
-
+const middleware = require("../middleware/auth")
 // get all
 router.get("/", (req, res) => {
   try {
@@ -23,7 +23,7 @@ router.get("/", (req, res) => {
     });
   }
 });
-
+  
 // get one
 router.get("/:id", (req, res) => {
   try {

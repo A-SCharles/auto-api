@@ -3,6 +3,7 @@ const con = require("../config/dbcon");
 const express = require("express");
 const app = express();
 const router = express.Router();
+const middleware = require("../middleware/auth")
 
 // get all cars
 router.get("/", (req, res) => {
