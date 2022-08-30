@@ -19,5 +19,9 @@ app.get("/", (req, res) => {
 const userRoute  = require("./routes/userRoute")
 app.use("/users", userRoute)
 
+const wishListRoute = require("./routes/wishlistRoute")
+app.use(wishListRoute)
+
 const carsRoute  = require("./routes/carsRoute")
 app.use("/cars", carsRoute)
+

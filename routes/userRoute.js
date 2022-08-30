@@ -3,7 +3,10 @@ const con = require("../config/dbcon");
 const router = express.Router();
 const bodyparser = require("body-parser");
 const jwt = require("jsonwebtoken");
-const { hash, compare } = require("bcrypt");
+const {
+  hash,
+  compare
+} = require("bcrypt");
 const middleware = require("../middleware/auth")
 // get all
 router.get("/", (req, res) => {
@@ -23,7 +26,7 @@ router.get("/", (req, res) => {
     });
   }
 });
-  
+
 // get one
 router.get("/:id", (req, res) => {
   try {
@@ -84,7 +87,10 @@ router.post("/", bodyparser.json(), async (req, res) => {
 // user login
 router.patch("/", bodyparser.json(), (req, res) => {
   try {
-    const { email, password } = req.body;
+    const {
+      email,
+      password
+    } = req.body;
     const strQry = `SELECT * FROM users WHERE email = '${email}'`;
 
     con.query(strQry, async (err, results) => {
@@ -97,31 +103,30 @@ router.patch("/", bodyparser.json(), (req, res) => {
         const isMatch = await compare(password, results[0].password);
         if (isMatch === true) {
           const payload = {
-           user : results[0]
+            user: results[0]
             // user: {
             //   id: results[0].id,
             //   username: results[0].username,
             //   email: results[0].email,
             //   usertype: results[0].usertype,
-            }
-            jwt.sign(
-                payload,
-                process.env.jwtSecret,
-                {
-                    expiresIn: "365d",
+          }
+          jwt.sign(
+            payload,
+            process.env.jwtSecret, {
+              expiresIn: "365d",
             },
             (err, token) => {
-                if (err) throw err;
-                res.json({
-                    msg: "Login Successful",
-                    user: payload.user,
-                    token: token,
-                });
-                // res.json(payload.user);
+              if (err) throw err;
+              res.json({
+                msg: "Login Successful",
+                user: payload.user,
+                token: token,
+              });
+              // res.json(payload.user);
             }
-            );
-        // };
-          
+          );
+          // };
+
         } else {
           res.json({
             msg: "Password Incorrect",
@@ -135,43 +140,78 @@ router.patch("/", bodyparser.json(), (req, res) => {
 });
 
 // update user 
-router.put("/:id", (req, res)=>{
-    try {
-        const strQry = `UPDATE users SET ? WHERE id = ${req.params.id}`;
-        const  {username, firstname, surname, email, profile} = req.body
+router.put("/:id", middleware, (req, res) => {
+  try {
+    const strQry = `UPDATE users SET ? WHERE id = ${req.params.id}`;
+    const {
+      username,
+      firstname,
+      surname,
+      email,
+      profile
+    } = req.body
 
-        const user = {
-            firstname, surname, profile
-        }
-        con.query(strQry, user, (err, results) => {
-            if (err) throw err;
-
-            res.json({
-                msg : "Updated Successfully"
-            })
-        })
-    } catch (error) {
-        res.send(400).json({
-            error
-        })
+    const user = {
+      username,
+      firstname,
+      surname,
+      email,
+      profile
     }
+    con.query(strQry, user, (err, results) => {
+      if (err) throw err;
+
+      res.json({
+        msg: "Updated Successfully"
+      })
+    })
+  } catch (error) {
+    res.send(400).json({
+      error
+    })
+  }
+})
+
+// update user password
+router.put("/:id/pass", middleware, async (req, res) => {
+  try {
+    const strQry = `UPDATE users SET ? WHERE id = ${req.params.id}`;
+    const {
+      password
+    } = req.body
+
+    const user = {
+      password
+    }
+    user.password = await hash(user.password, 10)
+    con.query(strQry, user, async (err, results) => {
+      if (err) throw err;
+      res.json({
+        msg: "Updated Password Successfully"
+      })
+    })
+  } catch (error) {
+    res.send(400).json({
+      error
+    })
+  }
 })
 
 // delete users 
-router.delete("/:id", (req, res) => {
-    try {
-        const strQry = `DELETE FROM users WHERE id = ${req.params.id}`
-        
-        con.query(strQry, (err, results) => {
-            if (err) throw err;
-            res.json({
-                msg : "User deleted successfully"
-            }) 
-        })
-    } catch (error) {
-        res.status(400).json({
-            error
-        })
-    }
+router.delete("/:id", middleware, (req, res) => {
+  try {
+    const strQry = `DELETE FROM users WHERE id = ${req.params.id}`
+
+    con.query(strQry, (err, results) => {
+      if (err) throw err;
+      res.json({
+        msg: "User deleted successfully"
+      })
+    })
+  } catch (error) {
+    res.status(400).json({
+      error
+    })
+  }
 })
 module.exports = router;

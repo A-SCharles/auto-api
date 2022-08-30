@@ -1,7 +1,6 @@
 const bodyParser = require("body-parser");
 const con = require("../config/dbcon");
 const express = require("express");
-const app = express();
 const router = express.Router();
 const middleware = require("../middleware/auth")
 
@@ -44,7 +43,7 @@ router.get("/:id", (req, res) => {
 });
 
 // add product
-router.post("/", bodyParser.json(), (req, res) => {
+router.post("/", bodyParser.json(), middleware, (req, res) => {
   try {
     const car = req.body;
     const strQry = `INSERT INTO cars (vin, manufacturer, bodystyle, model, modelyear, MSRP, fueltype, transmission, img) VALUES (?,?,?,?,?,?,?,?,?)`;
@@ -76,7 +75,7 @@ router.post("/", bodyParser.json(), (req, res) => {
   }
 });
 
-router.put("/:id", bodyParser.json(), (req, res) => {
+router.put("/:id", bodyParser.json(), middleware, (req, res) => {
   try {
     const strQry = `UPDATE cars SET ? WHERE id = ${req.params.id}`;
     const {
@@ -118,7 +117,7 @@ router.put("/:id", bodyParser.json(), (req, res) => {
 });
 
 // DELETE
-router.delete("/:id", (req, res) => {
+router.delete("/:id", middleware, (req, res) => {
 try {
     const strQry =`DELETE FROM cars WHERE id = ${req.params.id}`
 
