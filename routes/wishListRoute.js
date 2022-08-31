@@ -17,7 +17,9 @@ router.get("/users/:id/wishlist", middleware, (req, res) => {
                     res.send(results[0].wishlist);
                 } else {
                     res.json({
-                        msg: "Please Login To View Cart",
+                        a,
+                        b,
+                        msg: "Please Login To View Wishlist",
                     });
                 }
             })();

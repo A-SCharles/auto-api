@@ -46,12 +46,11 @@ router.get("/:id", (req, res) => {
 router.post("/", bodyParser.json(), middleware, (req, res) => {
   try {
     const car = req.body;
-    const strQry = `INSERT INTO cars (vin, manufacturer, bodystyle, model, modelyear, MSRP, fueltype, transmission, img) VALUES (?,?,?,?,?,?,?,?,?)`;
+    const strQry = `INSERT INTO cars (manufacturer, bodystyle, model, modelyear, MSRP, fueltype, transmission, img) VALUES (?,?,?,?,?,?,?,?)`;
 
     con.query(
       strQry,
       [
-        car.vin,
         car.manufacturer,
         car.bodystyle,
         car.model,
@@ -79,7 +78,6 @@ router.put("/:id", bodyParser.json(), middleware, (req, res) => {
   try {
     const strQry = `UPDATE cars SET ? WHERE id = ${req.params.id}`;
     const {
-      vin,
       manufacturer,
       bodystyle,
       model,
@@ -91,14 +89,13 @@ router.put("/:id", bodyParser.json(), middleware, (req, res) => {
     } = req.body;
 
     const car = {
-      //   vin,
-      // manufacturer,
-      // bodystyle,
-      // model,
-      // modelyear,
-      // MSRP,
-      // fueltype,
-      // transmission,
+      manufacturer,
+      bodystyle,
+      model,
+      modelyear,
+      MSRP,
+      fueltype,
+      transmission,
       img,
     }
 
