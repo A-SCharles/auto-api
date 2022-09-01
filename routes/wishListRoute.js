@@ -14,7 +14,7 @@ router.get("/users/:id/wishlist", middleware, (req, res) => {
                 a = parseInt(req.user.id);
                 b = parseInt(req.params.id);
                 if (a === b) {
-                    res.send(results[0].wishlist);
+                    res.json(results[0].wishlist);
                 } else {
                     res.json({
                         a,
