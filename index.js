@@ -8,6 +8,16 @@ app.set("port", port || 4000);
 
 app.use(express.json(), cors(), express.static("public"));
 
+app.use((req, res, next) => {
+    // res.setHeader("Access-Control-Allow-Origin", "*");
+    res.set({
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "*",
+      "Access-Control-Allow-Methods": "*",
+    });
+    next();
+  });
+
 app.listen(port, ()=> {
     console.log(`Server is running on http://localhost:${port}`);
 })
