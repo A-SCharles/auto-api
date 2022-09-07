@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 const userRoute  = require("./routes/userRoute")
 app.use("/users", userRoute)
 
-const wishListRoute = require("./routes/wishlistRoute")
+const wishListRoute = require("./routes/wishListRoute")
 app.use(wishListRoute)
 
 const carsRoute  = require("./routes/carsRoute")
